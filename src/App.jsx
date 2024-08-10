@@ -1,6 +1,5 @@
 import { requestImagesBySearchValue } from "./services/images-api.js";
 import { useEffect, useState, useRef } from "react";
-
 import SearchBar from "./components/SearchBar/SearchBar.jsx";
 import Loader from "./components/Loader/Loader.jsx";
 import ImageGallery from "./components/ImageGallery/ImageGallery.jsx";

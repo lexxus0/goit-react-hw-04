@@ -30,8 +30,8 @@ const ImageModal = ({ isOpen, onClose, small }) => {
       style={CUSTOM_STYLES}
       contentLabel="Image Modal"
     >
-      <div style={css.modalContent}>
-        <img src={small} alt="modal" style={css.modalImage} />
+      <div className={css.modalContent}>
+        <img src={small} alt="modal" className={css.modalImage} />
       </div>
     </Modal>
   );
