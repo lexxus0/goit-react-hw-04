@@ -1,0 +1,25 @@
+.galleryList {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  padding-top: 10px;
+  margin: 0 auto;
+  list-style: none;
+  overflow: hidden;
+  position: relative;
+}
+
+.galleryItem {
+  overflow: hidden;
+  transition: opacity 350ms ease-in-out;
+}
+
+.galleryItem:hover {
+  transform: scale(1.1);
+  transition: transform 350ms linear;
+  opacity: 1;
+}
+
+.galleryList .galleryItem:not(:hover) {
+  opacity: 0.6;
+}
