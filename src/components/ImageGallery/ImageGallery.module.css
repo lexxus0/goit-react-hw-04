@@ -19,7 +19,3 @@
   transition: transform 350ms linear;
   opacity: 1;
 }
-
-.galleryList .galleryItem:not(:hover) {
-  opacity: 0.6;
-}
