@@ -1,7 +1,11 @@
 import ImageCard from "../ImageCard/ImageCard";
 import css from "./ImageGallery.module.css";
+import { useSelector } from "react-redux";
+import { selectImages } from "../../redux/images/selectors";
 
-const ImageGallery = ({ images, onImgClick }) => {
+const ImageGallery = ({ onImgClick }) => {
+  const images = useSelector(selectImages);
+
   return (
     <ul className={css.galleryList}>
       {images.map((image) => (

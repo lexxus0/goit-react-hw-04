@@ -1,4 +1,4 @@
-import { requestImagesBySearchValue } from "./services/images-api.js";
+import { fetchImages } from "./redux/images/operations.js";
 import { useEffect, useState, useRef } from "react";
 import SearchBar from "./components/SearchBar/SearchBar.jsx";
 import Loader from "./components/Loader/Loader.jsx";
@@ -6,12 +6,20 @@ import ImageGallery from "./components/ImageGallery/ImageGallery.jsx";
 import ErrorMessage from "./components/ErrorMessage/ErrorMessage.jsx";
 import ImageModal from "./components/ImageModal/ImageModal.jsx";
 import LoadMoreBtn from "./components/LoadMoreBtn/LoadMoreBtn.jsx";
+import {
+  selectImages,
+  selectError,
+  selectIsLoading,
+} from "./redux/images/selectors.js";
+import { useDispatch, useSelector } from "react-redux";
 
 const App = () => {
+  const dispatch = useDispatch();
+  const images = useSelector(selectImages);
+  const error = useSelector(selectError);
+  const isLoading = useSelector(selectIsLoading);
+
   const [searchValue, setSearchValue] = useState(null);
-  const [images, setImages] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isError, setIsError] = useState(null);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [settedImage, setSettedImage] = useState("");
   const [page, setPage] = useState(1);
@@ -20,34 +28,13 @@ const App = () => {
   useEffect(() => {
     if (!searchValue) return;
 
-    const fetchImages = async () => {
-      setIsLoading(true);
-      try {
-        const data = await requestImagesBySearchValue(searchValue, page);
-        setImages((prevImages) => [...prevImages, ...data.results]);
-      } catch (e) {
-        setIsError(e.message);
-      } finally {
-        setIsLoading(false);
-        if (galleryRef.current && page > 1) {
-          setTimeout(() => {
-            const imgElements = galleryRef.current.querySelectorAll("li");
-            if (imgElements.length > 0) {
-              const imgH = imgElements[imgElements.length - 1].clientHeight;
-              window.scrollBy({ top: imgH * 2, behavior: "smooth" });
-            }
-          }, 100);
-        }
-      }
-    };
-
-    fetchImages();
-  }, [searchValue, page]);
+    dispatch(fetchImages({ query: searchValue, page }));
+  }, [searchValue, page, dispatch]);
 
   const onSearch = (searchedValue) => {
     setSearchValue(searchedValue);
-    setImages([]);
     setPage(1);
+    dispatch(fetchImages({ query: searchedValue, page: 1 }));
   };
 
   const loadMore = () => {
@@ -66,10 +53,10 @@ const App = () => {
   return (
     <div>
       <SearchBar onSearch={onSearch} />
-      {isError && <ErrorMessage isError={isError} />}
+      {error && <ErrorMessage />}
       {isLoading && page === 1 && <Loader />}
       <div ref={galleryRef}>
-        <ImageGallery images={images} onImgClick={onOpenModal} />
+        <ImageGallery onImgClick={onOpenModal} />
       </div>
       {isLoading && page > 1 && <Loader />}
       {images.length > 0 && !isLoading && <LoadMoreBtn loadMore={loadMore} />}
